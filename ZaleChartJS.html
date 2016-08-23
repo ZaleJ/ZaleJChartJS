@@ -1,0 +1,329 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Line Chart</title>
+    <script src="../dist/Chart.bundle.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width:95%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <br>
+    <br>
+    
+    <button id="updateChartData">Update Chart Name</button>
+    <button id="randomizeData">Randomize Data</button>
+    <button id="addDataset">Add Dataset</button>
+    <button id="removeDataset">Remove Dataset</button>
+    <button id="addData">Add Data</button>
+    <button id="removeData">Remove Data</button>
+
+
+
+
+    <form name="form1" method="post" action="">
+ <p><b>行数：</b>
+    <input name="name1" type="text" style="width:40px" value="4">
+    <b>列数：</b>
+    <input name="name2" type="text" style="width:40px" value="4">
+    <input type="button" name="Submit3" value="生成表格" onClick="tableclick(document.form1.name1,document.form1.name2,document.form1.name3)">
+ </p>
+ <p><b align="top">表值：</b></p>
+ <p>
+    <textarea name="name3" rows="10" wrap="VIRTUAL" style="width:300px">
+COL1#COL2#COL3#COL4#
+0#1#2#3#
+0#4#5#6#
+0#7#8#9#</textarea>
+ </p>
+</form>
+<div id="aa"></div>
+<button id="createPic">生成图像</button>
+<br>
+<p>注：</p>
+<p>生成图像前应生成表格</p>
+<p>表值中每个区域对应用‘#’间隔的每个字段，连续排列直到填满整个表格（表格大小允许大于表值数量，表值中的空格与回车均将忽略）</p>
+<p>如例中按计划有格式的安排表值，将帮助你更好地完成任务</p>
+<p>表值末尾请勿加‘#’， 否则将产生难以预料的效果</p>
+<p>超过列数的值请输入数字，否则将产生难以预料的效果</p>
+
+
+
+
+
+    <script>
+        tableclick(document.form1.name1,document.form1.name2,document.form1.name3);
+        var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var randomScalingFactor = function() {
+            return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));    //四舍五入取整round方法
+        };
+        var randomColorFactor = function() {
+            return Math.round(Math.random() * 255);
+        };
+        var randomColor = function(opacity) {
+            return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+        };
+
+        var config = {
+            type: 'line',
+            data: {
+                labels: Line,
+                datasets: [{
+                    label: "My First dataset",
+                    data: DataList.slice(0,4),
+                    fill: false,
+                    borderDash: [5, 5],
+                }, {
+                    label: "My Second dataset",
+                    data: DataList.slice(4,8),
+                    fill: false,
+                    borderDash: [5, 5],
+                }, {
+                    label: "My Third dataset - No bezier",
+                    data: DataList.slice(8, 12),
+                    lineTension: 0,
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'bottom',
+                },
+                hover: {
+                    mode: 'label'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Month'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value'
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: '曲线图'
+                }
+            }
+        };
+
+        $.each(config.data.datasets, function(i, dataset) {                                         // 对所有线条的操作
+            var background = randomColor(0.5);
+            dataset.borderColor = background;
+            dataset.backgroundColor = background;
+            dataset.pointBorderColor = background;
+            dataset.pointBackgroundColor = background;
+            dataset.pointBorderWidth = 1;
+        });
+
+        window.onload = function() {                                                                           //装载图像
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myLine = new Chart(ctx, config);                                                     //定义新图像
+        };
+
+        $('#randomizeData').click(function() {                                                                //随机生成数据
+            $.each(config.data.datasets, function(i, dataset) {                                         //重置所有数据
+                dataset.data = dataset.data.map(function() {
+                    return randomScalingFactor();                                                      // 将所有值变成一个值。。就是随机数。难以利用。
+                });
+
+            });
+
+            window.myLine.update();
+        });
+
+        $('#addDataset').click(function() {                                                                     //增加一个线条
+            var background = randomColor(0.5);                                                            //随机生成背景色
+            var newDataset = {                                                                                      //定义新数据域
+                label: 'Dataset ' + config.data.datasets.length,
+                borderColor: background,
+                backgroundColor: background,
+                pointBorderColor: background,
+                pointBackgroundColor: background,
+                pointBorderWidth: 1,
+                fill: false,
+                data: [],
+            };
+/*
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());                                            // 生成新的数组数据
+            }                                                                                                                      // 可以修改成。。增加自定义的数字?
+*/
+
+            for (var index = 0; index < config.data.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());                                            // 生成新的数组数据
+            }
+
+
+            config.data.datasets.push(newDataset);    // 添加新的数组形式以及数据
+            window.myLine.update();
+        });
+
+        $('#addData').click(function() {
+            if (config.data.datasets.length > 0) {
+                var month = MONTHS[config.data.labels.length % MONTHS.length];
+                config.data.labels.push(month);
+
+                $.each(config.data.datasets, function(i, dataset) {
+                    dataset.data.push(randomScalingFactor());
+                });
+
+                window.myLine.update();
+            }
+        });
+
+        $('#removeDataset').click(function() {
+            config.data.datasets.splice(0, 1);
+            window.myLine.update();
+        });
+
+        $('#removeData').click(function() {
+            config.data.labels.splice(-1, 1); // remove the label first
+
+            config.data.datasets.forEach(function(dataset, datasetIndex) {
+                dataset.data.pop();
+            });
+
+            window.myLine.update();
+        });
+
+
+
+        $('#createPic').click(function(){
+            window.myLine.update();
+        });
+
+        $('#updateChartData').click(function() {
+            var FirstData=config.data.datasets[0].data;               //获取第一条线的数据
+            alert(FirstData[0]);
+            FirstData[0]=DataList[0];                                                        //修改第一条线的数据
+            window.myLine.update();
+        });
+
+
+// TODO
+function tableclick(name1,name2,name3){    // 按钮响应
+  Trow=name1.value;        // 行数
+  Tcol=name2.value;        // 列数
+  Tv=name3.value;        // 内容
+
+  if ((Trow=="") || (Tcol=="") || (Tv=="")){
+    alert("请将制作表格的条件填写完整");
+  }
+  else{
+    r=parseInt(Trow);
+    c=parseInt(Tcol);
+    Table1(r,c,Tv);
+  }
+}
+
+function tablevalue(a,ai,rows,col,str){
+  int1=a.length;
+  for (i=0;i<rows;++i){
+    for (j=0;j<col;++j){
+      if ((j==0)&&(ai>=int1)){break;}
+      if (ai>=int1){
+      str=str+"<td scope='col'>&nbsp;</td>";
+      }
+      else{
+        if (j==0){
+        str=str+"<tr><th scope='col'>&nbsp;"+(a[ai++])+"</th>";
+        }
+        else{
+          if (j==col-1){
+            str=str+"<td scope='col'>&nbsp;"+(a[ai++])+"</td>";
+          }
+          else{
+            str=str+"<td scope='col'>&nbsp;"+(a[ai++])+"</td>";
+          }       
+        }
+      }
+    }
+    str=str+"</tr>";
+  }
+  return str;
+}
+function Table1(row,col,Str1){
+var str="";
+  a=new Array();
+  s=new String(Str1);
+  a=s.split("#");
+  int1=a.length;
+  ai=0;
+  if (col<=int1){
+     str=str+"<table width='300' border='4' id='JzlTable'>";
+
+    for (i=0;i<col;++i){
+      if (i==0){
+        str=str+"<tr><th scope='col'>&nbsp;"+(a[ai++])+"</th>";
+      }
+      else{
+        if (i==(col-1)){
+          str=str+"<th scope='col'>&nbsp;"+(a[ai++])+"</th></tr>";
+        }
+        else{
+          str=str+"<th scope='col'>&nbsp;"+(a[ai++])+"</th>";
+        }
+      }
+    }
+    if (int1>col){
+      if (row>1){
+        str=tablevalue(a,ai,row-1,col,str);  
+      }
+    }   
+    str=str+ "</table>";
+    aa.innerHTML=str;
+  }
+
+
+  // 提取行的值
+  outPutLine(a, row);
+}
+
+function outPutLine(strs, row){
+    Line=new Array();
+    for(i=0; i <row; i++){
+        Line[i]=String(strs[i]);
+    }
+    outPutData();
+    return Line;
+}
+
+function outPutData(){
+    NumberOfLines=parseInt(a.length/Line.length-1);          //获取存在线条的个数
+    //alert(NumberOfLines);
+    //alert(a.slice(2,3));
+    //alert(a.slice(NumberOfLines+1));
+    DataList=new Array();
+    DataList=a.slice(NumberOfLines+1);                            //所有数据保存的数组
+
+}
+
+    </script>
+    
+
+
+    
+</body>
+
+</html>
