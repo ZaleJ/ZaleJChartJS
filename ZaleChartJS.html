@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Line Chart</title>
+    <title>ZaleJChartJS-LINE</title>
     <script src="../dist/Chart.bundle.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <style>
@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div style="width:95%;">
+    <div style="width:50%;">
         <canvas id="canvas"></canvas>
     </div>
     <br>
@@ -38,6 +38,7 @@
     <b>列数：</b>
     <input name="name2" type="text" style="width:40px" value="4">
     <input type="button" name="Submit3" value="生成表格" onClick="tableclick(document.form1.name1,document.form1.name2,document.form1.name3)">
+    <input name="ChangeTitle" type="text" style="width:40px" value="Title">
  </p>
  <p><b align="top">表值：</b></p>
  <p>
@@ -210,16 +211,19 @@ COL1#COL2#COL3#COL4#
 
 
         $('#createPic').click(function(){
-            //alert(config.data.labels);
-            config.data.labels[0]="aaa";
-            config.options.title.text="111";
+
             window.myLine.update();
         });
 
         $('#updateChartData').click(function() {
-            var FirstData=config.data.datasets[0].data;               //获取第一条线的数据
-            alert(FirstData[0]);
-            FirstData[0]=DataList[0];                                                        //修改第一条线的数据
+            var FirstData=config.data.datasets[0].data;               //成功获取第一条线的数据
+            //alert(FirstData[0]);
+            FirstData[0]=DataList[0];                                                        //成功修改第一条线的第一个数据
+            //alert(config.data.labels);
+            config.data.labels[0]="aaa";                              //成功修改第一个横坐标的值
+            //config.options.title.text="111";                         // 成功修改图表标题
+            //alert(document.form1.ChangeTitle.value);
+            config.options.title.text=document.form1.ChangeTitle.value;
             window.myLine.update();
         });
 
