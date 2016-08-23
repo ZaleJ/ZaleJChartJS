@@ -210,6 +210,9 @@ COL1#COL2#COL3#COL4#
 
 
         $('#createPic').click(function(){
+            //alert(config.data.labels);
+            config.data.labels[0]="aaa";
+            config.options.title.text="111";
             window.myLine.update();
         });
 
