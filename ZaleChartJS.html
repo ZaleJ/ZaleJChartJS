@@ -22,7 +22,7 @@
     <br>
     <br>
     
-    <button id="updateChartData">Update Chart Name</button>
+    <button id="updateChartData">Update Chart</button>
     <button id="randomizeData">Randomize Data</button>
     <button id="addDataset">Add Dataset</button>
     <button id="removeDataset">Remove Dataset</button>
@@ -218,9 +218,13 @@ COL1#COL2#COL3#COL4#
         $('#updateChartData').click(function() {
             var FirstData=config.data.datasets[0].data;               //成功获取第一条线的数据
             //alert(FirstData[0]);
-            FirstData[0]=DataList[0];                                                        //成功修改第一条线的第一个数据
+            //FirstData[0]=DataList[0];                                                        //成功修改第一条线的第一个数据
+            for(var i=0; i < config.data.labels.length; i++){                        //成功更新所有横坐标的值
+                config.data.labels[i]=Line[i];
+            }
+
             //alert(config.data.labels);
-            config.data.labels[0]="aaa";                              //成功修改第一个横坐标的值
+            //config.data.labels[0]="aaa";                              //成功修改第一个横坐标的值
             //config.options.title.text="111";                         // 成功修改图表标题
             //alert(document.form1.ChangeTitle.value);
             config.options.title.text=document.form1.ChangeTitle.value;
