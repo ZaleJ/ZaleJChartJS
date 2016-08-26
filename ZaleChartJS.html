@@ -253,11 +253,13 @@ COL1#COL2#COL3#COL4#
 
 
             for(var i=0; i < config.data.labels.length; i++){
-                //config.data.labels[i]=Line[i];                                        //成功更新所有横坐标的值（未改变数量）
+                config.data.labels[i]=Line[i];                                        //成功更新所有横坐标的值（未改变数量）（某些情况下成功）
                 //alert(i);                                                                  //循环次数与定义列表值相符
                 //alert(config.data.labels[i]);
                 //alert(Line[i]);                                                            //Line[i]显示越界
-                config.data.labels[i]=a[i];                                          //a成功完成定义
+                config.data.labels[i]=a[i];                                          //a成功完成定义(某些情况下定义失效)
+
+                //window.myLine.update();
             }
 
 
